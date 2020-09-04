@@ -1,0 +1,10 @@
+*.tfvars
+*.json
+./terraform/
+./terraform/*
+*.tfstate.*
+*.tfstate
+/tmp
+.terraform/
+inventory
+*/*/.travis.yml

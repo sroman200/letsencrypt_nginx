@@ -1,0 +1,13 @@
+---
+# vars file for web
+nginx_user: nginx
+http_port: 80
+worker_connections: 2048
+nginx_dest_path_vhost: /etc/nginx/conf.d/
+params:
+  sendfile: "on"
+  tcp_nopush: "on"
+  tcp_nodelay: "on"
+  keepalive_timeout: 65
+  types_hash_max_size: 2048
+domain_name_http: ramon-st.devops.net

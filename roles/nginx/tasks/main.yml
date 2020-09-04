@@ -1,0 +1,23 @@
+---
+# tasks file for web
+- name: Install Nginx Web Server on RedHat Family
+  yum:
+    name: nginx-1.16.1
+    state: present
+- name: Add Nginx vhosts
+  template:
+    src: vhost.conf.j2
+    dest: "{{ nginx_dest_path_vhost }}{{ domain_name_http }}.conf"
+    owner: root
+    group: root
+    mode: '0644'
+    force: yes
+  notify: Reload nginx
+- name: Start nginx
+  service:
+    name: nginx
+    enabled: yes
+    state: started
+
+
+

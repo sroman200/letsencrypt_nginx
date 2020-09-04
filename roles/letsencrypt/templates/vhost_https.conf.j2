@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name {{domain_name_https}};
+                
+    access_log /var/log/{{domain_name_https}}_http_access.log;
+    error_log /var/log/{{domain_name_https}}_http_error.log;
+    
+    location / {     
+        return 301 https://{{domain_name_https}}$request_uri;
+        }
+    location /.well-known {
+        root /opt/acme;
+        allow all;
+        }
+}        
+
+server {
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{domain_name_https}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{domain_name_https}}/privkey.pem;
+
+    access_log /var/log/{{domain_name_https}}_https_access.log;
+    error_log /var/log/{{domain_name_https}}_https_error.log;
+
+    location / {
+        return 200 "OK!  https\n";
+        }
+}        

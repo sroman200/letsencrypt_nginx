@@ -1,0 +1,41 @@
+---
+# tasks file for letsencrypt
+- name: Install letsencrypt on RedHat OS Family
+  yum:
+   name: letsencrypt
+   state: present
+  tags:
+   - certbot
+- name: Create folder for SSL
+  file:
+   path: /opt/acme
+   state: directory
+   owner: root
+   group: root
+   mode: '0644'
+
+- name: Recieve SSL cert
+  shell: letsencrypt certonly --non-interactive --agree-tos --webroot -w /opt/acme -d {{ domain_name_https }} --email ramon_st@mail.ru
+  args:
+   creates: /etc/letsencrypt/live/{{ domain_name_https }}/fullchain.pem
+
+- name: Add Nginx vhosts https
+  template:
+   src: vhost_https.conf.j2
+   dest: /etc/nginx/conf.d/{{ domain_name_https }}.conf
+   owner: root
+   group: root
+   mode: '0644'
+  notify: Reload nginx
+  tags:
+   - https_conf
+
+- name: add cron for renew cert
+  cron:
+   name: Certificate renewal
+   job: "letsencrypt renew && systemctl reload nginx"
+   state: present
+   user: root
+   month: "*/2"
+  tags:
+   - cron_renew_cert
